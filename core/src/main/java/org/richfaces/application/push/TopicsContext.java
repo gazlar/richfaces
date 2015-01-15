@@ -60,6 +60,15 @@ public abstract class TopicsContext {
 
     /**
      * <p>
+     * Creates a topic without a subtopic for given key if it doesn't exist.
+     * </p>
+     */
+    private void createTopicWithoutSubtopic(TopicKey key) {
+        topics.putIfAbsent(key.getTopicName(), createTopic(new TopicKey(key.getTopicName(), null)));
+    }
+
+    /**
+     * <p>
      * Creates topic for given key or returns existing one when it was already created.
      * </p>
      *
@@ -71,6 +80,7 @@ public abstract class TopicsContext {
         Topic result = topics.get(key.getTopicName());
 
         if (result == null) {
+            createTopicWithoutSubtopic(key);
             Topic newTopic = createTopic(key);
             result = topics.putIfAbsent(key.getTopicName(), newTopic);
             if (result == null) {
